@@ -32,14 +32,19 @@ async def get_weather(city: str) -> str:
     if not results:
         return f'Couldn\'t find "{city}".'
     loc = results[0]
+    # Geocoding results don't always carry every field — e.g. Open-Meteo
+    # returns "Hong Kong" and "Macau" with no "country" key at all. Default
+    # missing string fields to "", matching Go's zero-value struct decoding.
+    name = loc.get("name") or ""
+    country = loc.get("country") or ""
 
     # 2. Coordinates -> current weather.
     try:
         wx = await get_json(
             "https://api.open-meteo.com/v1/forecast",
             {
-                "latitude": loc["latitude"],
-                "longitude": loc["longitude"],
+                "latitude": loc.get("latitude"),
+                "longitude": loc.get("longitude"),
                 "current": "temperature_2m,wind_speed_10m,weather_code",
             },
         )
@@ -53,7 +58,7 @@ async def get_weather(city: str) -> str:
     code = cur.get("weather_code") or 0
 
     return (
-        f"{loc['name']}, {loc['country']}: {condition(code)}, "
+        f"{name}, {country}: {condition(code)}, "
         f"{temperature:.1f}°C, wind {wind:.1f} km/h"
     )
 
@@ -83,8 +88,9 @@ def condition(code: int) -> str:
 
 
 # Plain health check so you can curl the service and confirm it's up.
-# Catch-all for any path other than /mcp, mirroring Go's mux.HandleFunc("/", ...).
-@mcp.custom_route("/{path:path}", methods=["GET"])
+# Catch-all for any path/method other than /mcp, mirroring Go's
+# mux.HandleFunc("/", ...) which answers any request with the same 200.
+@mcp.custom_route("/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"])
 async def health(_: Request) -> PlainTextResponse:
     return PlainTextResponse("weather-check ok — MCP endpoint at /mcp\n")
 
