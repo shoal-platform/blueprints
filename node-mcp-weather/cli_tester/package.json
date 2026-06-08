@@ -1,0 +1,17 @@
+{
+  "name": "weather-cli-tester",
+  "version": "0.1.0",
+  "description": "Chat client that connects to the weather-check MCP server and lets OpenAI call its tools.",
+  "type": "module",
+  "main": "client.js",
+  "scripts": {
+    "start": "node client.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "openai": "^6.42.0"
+  }
+}
