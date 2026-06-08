@@ -16,3 +16,4 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 |-----------|----------------|-------------|
 | go-mcp-weather | MCP Server Goland | A working weather MCP server with client to test |
 | node-mcp-weather | MCP Server Node | A working weather MCP server with client to test |
+| python-mcp-weather | MCP Server Python | A working weather MCP server with client to test |
