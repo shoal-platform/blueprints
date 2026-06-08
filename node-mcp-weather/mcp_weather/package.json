@@ -1,0 +1,17 @@
+{
+  "name": "mcp-weather",
+  "version": "0.1.0",
+  "description": "Minimal MCP server with a get_weather tool, served over Streamable HTTP.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  }
+}
