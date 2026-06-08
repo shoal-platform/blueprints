@@ -19,3 +19,4 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 | vite-frontend-static | Vite Hello World      | A static vite frontend                                                               |
 | pastebin             | Pastebin              | TypeScript + Postgres backend with a React frontend; create, read, and browse pastes |
 | canvas-stack         | Live canvas           | A live pixel canvas                                                                  |
+| basic-nextjs-app         | Nextjs Horse Website           | A small site about horses showcasing nextjs' multi-page support        |
