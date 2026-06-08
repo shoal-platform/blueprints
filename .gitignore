@@ -1,32 +1,86 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
-# Binaries for programs and plugins
+# Shoal blueprints — combined .gitignore
+# Covers: Go, Node/JavaScript/TypeScript, Python, Ruby, PHP, .NET (C#), Rust
+# Add language-specific entries here as new blueprints are added.
+
+# ---- General ----
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ---- Go ----
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, built with `go test -c`
 *.test
-
-# Code coverage profiles and other test artifacts
 *.out
 coverage.*
 *.coverprofile
 profile.cov
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
 go.work
 go.work.sum
+# vendor/
 
-# env file
-.env
+# ---- Node / JavaScript / TypeScript ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+build/
+.next/
+.nuxt/
+.turbo/
+coverage/
+*.tsbuildinfo
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+pip-wheel-metadata/
+
+# ---- Ruby ----
+*.gem
+.bundle/
+vendor/bundle/
+.rspec_status
+
+# ---- PHP ----
+vendor/
+composer.phar
+.phpunit.result.cache
+
+# ---- .NET / C# ----
+bin/
+obj/
+*.user
+*.suo
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ---- Rust ----
+target/
+Cargo.lock
+**/*.rs.bk
