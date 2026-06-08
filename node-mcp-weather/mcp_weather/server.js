@@ -57,9 +57,14 @@ async function getWeather({ city }) {
     return text("Weather fetch failed: " + err.message);
   }
 
-  const cur = wx.current;
-  const out = `${loc.name}, ${loc.country}: ${condition(cur.weather_code)}, ` +
-    `${cur.temperature_2m.toFixed(1)}°C, wind ${cur.wind_speed_10m.toFixed(1)} km/h`;
+  // Default missing/null fields to 0, matching Go's zero-value struct behavior,
+  // so a partial response still renders instead of throwing on .toFixed.
+  const cur = wx.current ?? {};
+  const code = cur.weather_code ?? 0;
+  const temperature = cur.temperature_2m ?? 0;
+  const wind = cur.wind_speed_10m ?? 0;
+  const out = `${loc.name}, ${loc.country}: ${condition(code)}, ` +
+    `${temperature.toFixed(1)}°C, wind ${wind.toFixed(1)} km/h`;
   return text(out);
 }
 
@@ -116,13 +121,9 @@ const httpServer = createServer(async (req, res) => {
     return;
   }
   // Plain health check so you can curl the service and confirm it's up.
-  if (req.url === "/") {
-    res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
-    res.end("weather-check ok — MCP endpoint at /mcp\n");
-    return;
-  }
-  res.writeHead(404);
-  res.end();
+  // Catch-all for any other path, mirroring Go's `mux.HandleFunc("/", ...)`.
+  res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+  res.end("weather-check ok — MCP endpoint at /mcp\n");
 });
 
 httpServer.listen(Number(port), () => {

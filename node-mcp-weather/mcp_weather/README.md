@@ -4,7 +4,7 @@ A tiny MCP server with **one tool** — `get_weather(city)` — backed by the fr
 keyless Open-Meteo API. Served over Streamable HTTP so it runs as a container.
 Deploy target: **Google Cloud Run** (gives you an HTTPS URL for free).
 
-Files: `server.js`, `package.json`, `Dockerfile`.
+Files: `server.js`, `package.json`, `package-lock.json`, `Dockerfile`.
 
 ---
 
@@ -76,6 +76,6 @@ curl http://localhost:8080/
 ## Notes
 
 - The container listens on `$PORT` (Cloud Run sets it; defaults to 8080 locally).
-- The `Dockerfile` runs `npm install` during the build, so the image always
-  resolves the MCP SDK and other deps from `package.json`.
+- The `Dockerfile` runs `npm ci` against the committed `package-lock.json`, so
+  the image always installs the exact dependency versions you tested locally.
 - Open-Meteo is free for non-commercial use, no key. https://open-meteo.com/en/terms

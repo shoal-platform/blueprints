@@ -99,6 +99,15 @@ async function main() {
   console.log("Ask about the weather (Ctrl-C to quit).\n");
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
+  // Node's readline doesn't reject the pending `question` on Ctrl-C, and by
+  // default SIGINT just kills the process before the loop below can clean up.
+  // Handle it ourselves so Ctrl-C exits gracefully, like the Python original.
+  process.on("SIGINT", async () => {
+    console.log("\nbye");
+    rl.close();
+    await client.close();
+    process.exit(0);
+  });
   try {
     while (true) {
       let userText;
