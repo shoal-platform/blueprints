@@ -12,11 +12,21 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 
 ## Blueprints
 
-| Directory            | Blueprint Name        | Description                                                                          |
-| -------------------- | --------------------- | ------------------------------------------------------------------------------------ |
-| go-mcp-weather       | MCP Server Goland     | A working weather MCP server with client to test                                     |
-| vite-go-hello-world  | Hello World with Vite | A basic vite & golang stack                                                          |
-| vite-frontend-static | Vite Hello World      | A static vite frontend                                                               |
-| pastebin             | Pastebin              | TypeScript + Postgres backend with a React frontend; create, read, and browse pastes |
-| canvas-stack         | Live canvas           | A live pixel canvas                                                                  |
-| basic-nextjs-app         | Nextjs Horse Website           | A small site about horses showcasing nextjs' multi-page support        |
+| Directory            | Blueprint Name        | Description                                                                          | Completed |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------ | ---------- |
+| go-mcp-weather       | MCP Server Goland     | A working weather MCP server with client to test                                     | - |
+| vite-go-hello-world  | Hello World with Vite | A basic vite & golang stack                                                          | - |
+| vite-frontend-static | Vite Hello World      | A static vite frontend                                                               | - |
+| pastebin             | Pastebin              | TypeScript + Postgres backend with a React frontend; create, read, and browse pastes | - |
+| canvas-stack         | Live canvas           | A live pixel canvas                                                                  | - |
+| basic-nextjs-app         | Nextjs Horse Website           | A small site about horses showcasing nextjs' multi-page support        | - |
+| scheduler         | backend with a scheduler and api  | Updates costings of bitcoin and stores the data with and api        | - |
+| full-stack-app         | Simple forums app  | Updates costings of bitcoin and stores the data with and api and UI        | - |
+| microservices         | Sports App  | Multiple microservices with a database       | - |
+| uptime-app | Uptime application | Scheduler fires every minute, a Function pings a list of URLs, status + latency logged to Neon, with a tiny status page.   | - |
+| strawpoll | StrawPoll | Simple starwpoll app, with expiry and times with output, UI + container and database | - |
+| DiscordBot | Discordbot | - | - |
+| WeatherApp | WeatherLLM | Uses an MCP server + LLM to compare the weather and some info on the cities | - |
+
+
+uptime-pingerIs-it-down? MonitorScheduler + Function + NeonAn UptimeRobot-lite. Scheduler fires every minute, a Function pings a list of URLs, status + latency logged to Neon, with a tiny status page. Great demo of the Scheduler node.
