@@ -1,0 +1,138 @@
+.canvas-page {
+  font-family: system-ui, sans-serif;
+}
+
+/* Sticky title floats over the canvas near the top. */
+.title-bar {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  padding: 0.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.title-bar h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.sub {
+  margin: 0.15rem 0 0;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.status {
+  padding: 2rem;
+  text-align: center;
+  color: #888;
+}
+
+/* Canvas fills the whole page. */
+.viewport {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  background: #f0f0f0;
+  cursor: grab;
+  touch-action: none;
+  scrollbar-width: none; /* Firefox */
+}
+
+.viewport::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.board {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.zoom-bar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.zoom-bar button {
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  line-height: 1;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.zoom-bar button:hover {
+  background: #eee;
+}
+
+.zoom-bar span {
+  min-width: 3.5ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.picker {
+  background: #fff;
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.picker-title {
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(5, 40px);
+  gap: 8px;
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.swatch:hover {
+  transform: scale(1.1);
+}

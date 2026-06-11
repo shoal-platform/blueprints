@@ -1,0 +1,10 @@
+# binaries
+golang-hello-world
+*.exe
+
+# build output
+/dist/
+
+# env
+.env
+.env.*

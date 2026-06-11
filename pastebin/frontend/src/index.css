@@ -1,0 +1,178 @@
+:root {
+  --bg: #0f1117;
+  --panel: #181b24;
+  --border: #272b36;
+  --text: #e6e8ee;
+  --muted: #8b90a0;
+  --accent: #6c8cff;
+  --error: #ff6b6b;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.topbar nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.topbar nav a.active {
+  color: var(--accent);
+}
+
+.content {
+  padding: 1.5rem 0 3rem;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--error);
+}
+
+a {
+  color: var(--accent);
+}
+
+.paste-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.paste-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.paste-link:hover {
+  border-color: var(--accent);
+}
+
+.paste-title {
+  font-weight: 600;
+}
+
+.paste-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.paste-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paste-form input,
+.paste-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.paste-form textarea {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  resize: vertical;
+}
+
+.paste-form input:focus,
+.paste-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button {
+  align-self: flex-start;
+  padding: 0.55rem 1.1rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.paste-content {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+}
