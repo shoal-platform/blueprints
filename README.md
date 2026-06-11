@@ -12,6 +12,7 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 
 ## Blueprints
 
+| Directory            | Blueprint             | Description                                                                            | Notes      |
 | -------------------- | --------------------- | ------------------------------------------------------------------------------------ | ---------- |
 | go-mcp-weather       | MCP Server Goland     | A working weather MCP server with client to test                                     | - |
 | vite-go-hello-world  | Hello World with Vite | A basic vite & golang stack                                                          | - |
