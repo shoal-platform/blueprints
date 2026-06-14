@@ -21,8 +21,8 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 | canvas-stack         | Live canvas           | A live pixel canvas                                                                  | - |
 | basic-nextjs-app         | Nextjs Horse Website           | A small site about horses showcasing nextjs' multi-page support        | - |
 | scheduler         | backend with a scheduler and api  | Updates costings of bitcoin and stores the data with and api        | - |
-| full-stack-app         | Simple forums app  | Updates costings of bitcoin and stores the data with and api and UI        | - |
-| microservices         | Sports App  | Multiple microservices with a database       | - |
+| full-stack-app         | Simple forums app  | Anonymous forum with topics, replies, and votes; Express + Neon backend with a Next.js UI        | - |
+| microservices         | Dropshipping order pipeline  | Three polyglot microservices (TypeScript orders API, Go inventory worker, Python notifications) sharing one Postgres, with a Next.js dashboard       | - |
 | uptime-app | Uptime application | Scheduler fires every minute, a Function pings a list of URLs, status + latency logged to Neon, with a tiny status page.   | - |
 | strawpoll | StrawPoll | Simple starwpoll app, with expiry and times with output, UI + container and database | - |
 | DiscordBot | Discordbot | - | - |

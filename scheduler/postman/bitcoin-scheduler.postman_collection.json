@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Bitcoin Price Scheduler",
+    "description": "Endpoints for the scheduler blueprint: a Cloud Scheduler ingest job that stores bitcoin prices, plus date-range read APIs for graphing.\n\nSet the `baseUrl` and `schedulerToken` variables (collection variables, or import the matching environment file). `schedulerToken` only matters if the service has SCHEDULER_TOKEN set.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "schedulerToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/healthz",
+          "host": ["{{baseUrl}}"],
+          "path": ["healthz"]
+        },
+        "description": "Liveness probe. Returns {\"status\": \"ok\"}."
+      }
+    },
+    {
+      "name": "Fetch price (scheduler target)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Scheduler-Token",
+            "value": "{{schedulerToken}}",
+            "description": "Required only if SCHEDULER_TOKEN is set on the service. Leave the variable empty otherwise."
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/tasks/fetch-price",
+          "host": ["{{baseUrl}}"],
+          "path": ["tasks", "fetch-price"]
+        },
+        "description": "The endpoint Cloud Scheduler hits. Fetches the current bitcoin price from CoinGecko and stores a row. Returns the stored record."
+      }
+    },
+    {
+      "name": "Latest price",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/prices/latest",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prices", "latest"]
+        },
+        "description": "Most recent stored price. 404 if nothing stored yet."
+      }
+    },
+    {
+      "name": "Prices over range (raw)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/prices?start=2026-06-01T00:00:00Z&end=2026-06-11T00:00:00Z",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prices"],
+          "query": [
+            {
+              "key": "start",
+              "value": "2026-06-01T00:00:00Z",
+              "description": "ISO 8601. Optional, default 24h ago."
+            },
+            {
+              "key": "end",
+              "value": "2026-06-11T00:00:00Z",
+              "description": "ISO 8601. Optional, default now."
+            }
+          ]
+        },
+        "description": "Raw price points in the range, for graphing. Omit start/end for the last 24h."
+      }
+    },
+    {
+      "name": "Prices over range (bucketed)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/prices?start=2026-06-01T00:00:00Z&end=2026-06-11T00:00:00Z&bucket=hour",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prices"],
+          "query": [
+            {
+              "key": "start",
+              "value": "2026-06-01T00:00:00Z",
+              "description": "ISO 8601. Optional, default 24h ago."
+            },
+            {
+              "key": "end",
+              "value": "2026-06-11T00:00:00Z",
+              "description": "ISO 8601. Optional, default now."
+            },
+            {
+              "key": "bucket",
+              "value": "hour",
+              "description": "minute | hour | day. Averages points per bucket (avg/low/high/samples)."
+            }
+          ]
+        },
+        "description": "Aggregated price points so long ranges stay small enough to graph. bucket is one of minute, hour, day."
+      }
+    }
+  ]
+}

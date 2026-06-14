@@ -24,7 +24,7 @@ from mcp.client.streamable_http import streamablehttp_client
 
 USE_LOCAL = os.getenv("USE_LOCAL", "true").lower() == "true"
 LOCAL_URL = "http://localhost:8080/mcp"
-REMOTE_URL = "https://mcp-weather.eu1-dev.shoal.live/mcp"          # <-- your Cloud Run / domain URL
+REMOTE_URL = "https://fingerthorn-jawhazel-venomspeckle.eu1-dev.shoal.live/mcp"          # <-- your Cloud Run / domain URL
 MCP_URL = LOCAL_URL if USE_LOCAL else REMOTE_URL
 
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
