@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { setName } from "@/lib/session";
 
 interface Props {
@@ -19,7 +20,9 @@ export default function NamePrompt({ onDone, onCancel }: Props) {
     onDone(name);
   }
 
-  return (
+  // Rendered through a portal so the modal's <form> is never nested inside the
+  // topic/reply <form> that triggered it — nested forms break the Save button.
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <form
         onSubmit={submit}
@@ -54,6 +57,7 @@ export default function NamePrompt({ onDone, onCancel }: Props) {
           </button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body,
   );
 }

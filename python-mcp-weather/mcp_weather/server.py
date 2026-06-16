@@ -5,10 +5,29 @@ import os
 
 import httpx
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 
-mcp = FastMCP("weather-check")
+# FastMCP's Streamable HTTP transport enables DNS-rebinding protection by
+# default with a localhost-only Host allowlist. Behind a real domain that
+# makes every request fail with HTTP 421 "Invalid Host header". Pass the
+# deployed host(s) via MCP_ALLOWED_HOSTS (comma-separated, e.g.
+# "mcp-python.eu1.shoal.live"); if unset, disable the check so the container
+# works on any domain out of the box.
+_allowed_hosts = [
+    h.strip() for h in os.environ.get("MCP_ALLOWED_HOSTS", "").split(",") if h.strip()
+]
+if _allowed_hosts:
+    _security = TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=_allowed_hosts,
+        allowed_origins=_allowed_hosts,
+    )
+else:
+    _security = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+
+mcp = FastMCP("weather-check", transport_security=_security)
 
 _client = httpx.AsyncClient(timeout=10.0)
 

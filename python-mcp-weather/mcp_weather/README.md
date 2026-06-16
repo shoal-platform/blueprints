@@ -76,6 +76,11 @@ curl http://localhost:8080/
 ## Notes
 
 - The container listens on `$PORT` (Cloud Run sets it; defaults to 8080 locally).
+- `MCP_ALLOWED_HOSTS` (optional, comma-separated) — Streamable HTTP enables
+  DNS-rebinding protection with a localhost-only Host allowlist by default, so
+  behind a real domain every request fails with `421 Invalid Host header`. Set
+  this to your deploy host (e.g. `mcp-python.eu1.shoal.live`) to keep the check
+  on; leave it unset to disable the check and accept any host.
 - The `Dockerfile` runs `pip install -r requirements.txt` during the build, so
   the image always resolves the MCP SDK and other deps from `requirements.txt`.
 - Open-Meteo is free for non-commercial use, no key. https://open-meteo.com/en/terms

@@ -67,18 +67,20 @@ export default function Home() {
         {topics?.map((topic) => (
           <li
             key={topic.id}
-            className="flex gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow hover:shadow dark:border-stone-700 dark:bg-stone-900"
+            className="relative flex gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow hover:shadow dark:border-stone-700 dark:bg-stone-900"
           >
-            <VoteButtons
-              targetType="topic"
-              targetId={topic.id}
-              score={topic.score}
-              userVote={topic.user_vote}
-            />
+            <div className="relative z-10">
+              <VoteButtons
+                targetType="topic"
+                targetId={topic.id}
+                score={topic.score}
+                userVote={topic.user_vote}
+              />
+            </div>
             <div className="min-w-0">
               <Link
                 href={`/topics/${topic.id}`}
-                className="font-medium hover:text-emerald-600"
+                className="font-medium after:absolute after:inset-0 hover:text-emerald-600"
               >
                 {topic.title}
               </Link>
