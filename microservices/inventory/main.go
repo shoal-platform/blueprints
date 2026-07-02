@@ -19,7 +19,6 @@ type config struct {
 	databaseURL      string
 	port             int
 	pollInterval     time.Duration
-	restockInterval  time.Duration
 	shipDelaySeconds int
 }
 
@@ -29,7 +28,6 @@ func loadConfig() config {
 		databaseURL:      mustEnvStr("DATABASE_URL"),
 		port:             envInt("PORT", 8080),
 		pollInterval:     time.Duration(envInt("POLL_INTERVAL_MS", 2000)) * time.Millisecond,
-		restockInterval:  time.Duration(envInt("RESTOCK_INTERVAL_MS", 15000)) * time.Millisecond,
 		shipDelaySeconds: envInt("SHIP_DELAY_SECONDS", 10),
 	}
 }
@@ -93,6 +91,8 @@ func main() {
 	}
 	store := &Store{pool: pool}
 
+	worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
+
 	// Open the HTTP port immediately (Cloud Run requires the container to
 	// listen within its startup timeout). The orders service owns the schema,
 	// so wait for the tables and start the workers in the background.
@@ -102,9 +102,7 @@ func main() {
 		}
 		log.Println("schema ready")
 
-		worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
 		go worker.RunReserveLoop(ctx, cfg.pollInterval)
-		go worker.RunRestockLoop(ctx, cfg.restockInterval)
 		go worker.RunShipLoop(ctx, cfg.pollInterval)
 	}()
 
@@ -119,6 +117,15 @@ func main() {
 			return
 		}
 		writeJSON(w, http.StatusOK, levels)
+	})
+	// Simulated supplier restock, triggered by an external scheduler instead of
+	// a background loop. Tops up stock, then retries backordered orders.
+	mux.HandleFunc("POST /inventory-service/api/restock", func(w http.ResponseWriter, r *http.Request) {
+		if err := worker.Restock(r.Context()); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]bool{"restocked": true})
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.port)

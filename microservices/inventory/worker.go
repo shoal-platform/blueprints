@@ -19,18 +19,16 @@ func (w *Worker) RunReserveLoop(ctx context.Context, interval time.Duration) {
 	}
 }
 
-// RunRestockLoop periodically simulates a supplier delivery, then retries
-// backordered orders against the new stock.
-func (w *Worker) RunRestockLoop(ctx context.Context, interval time.Duration) {
-	for {
-		time.Sleep(interval)
-		if err := w.store.Restock(ctx, 5, 20, 200); err != nil {
-			log.Printf("restock failed: %v", err)
-			continue
-		}
-		log.Println("restocked all products (simulated supplier sync)")
-		w.reserve(ctx, "backordered")
+// Restock simulates a supplier delivery, then retries backordered orders
+// against the new stock. Exposed as an endpoint so an external scheduler can
+// trigger it instead of a background loop.
+func (w *Worker) Restock(ctx context.Context) error {
+	if err := w.store.Restock(ctx, 5, 20, 200); err != nil {
+		return err
 	}
+	log.Println("restocked all products (simulated supplier sync)")
+	w.reserve(ctx, "backordered")
+	return nil
 }
 
 // RunShipLoop ships confirmed orders after a simulated fulfillment delay.
