@@ -79,16 +79,20 @@ func main() {
 	}
 	store := &Store{pool: pool}
 
-	// The orders service owns the schema; wait until it has created the tables.
-	if err := store.WaitForSchema(ctx, 60*time.Second); err != nil {
-		log.Fatalf("schema never appeared: %v", err)
-	}
-	log.Println("schema ready")
+	// Open the HTTP port immediately (Cloud Run requires the container to
+	// listen within its startup timeout). The orders service owns the schema,
+	// so wait for the tables and start the workers in the background.
+	go func() {
+		if err := store.WaitForSchema(ctx, 60*time.Second); err != nil {
+			log.Fatalf("schema never appeared: %v", err)
+		}
+		log.Println("schema ready")
 
-	worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
-	go worker.RunReserveLoop(ctx, cfg.pollInterval)
-	go worker.RunRestockLoop(ctx, cfg.restockInterval)
-	go worker.RunShipLoop(ctx, cfg.pollInterval)
+		worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
+		go worker.RunReserveLoop(ctx, cfg.pollInterval)
+		go worker.RunRestockLoop(ctx, cfg.restockInterval)
+		go worker.RunShipLoop(ctx, cfg.pollInterval)
+	}()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /inventory-service/healthz", func(w http.ResponseWriter, _ *http.Request) {

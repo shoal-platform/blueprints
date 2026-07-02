@@ -16,11 +16,19 @@ from consumer import run_consumer
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def _consume_when_ready():
+    # The orders service owns the schema; wait for the tables, then consume.
     await db.wait_for_schema()
     logging.getLogger("notifications").info("schema ready")
-    task = asyncio.create_task(run_consumer())
+    await run_consumer()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # Don't block startup on the schema wait — uvicorn must bind the port
+    # immediately or Cloud Run fails the container. Do the wait in the
+    # background so the port opens right away.
+    task = asyncio.create_task(_consume_when_ready())
     yield
     task.cancel()
 
