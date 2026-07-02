@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -18,7 +17,6 @@ import (
 type config struct {
 	databaseURL      string
 	port             int
-	pollInterval     time.Duration
 	shipDelaySeconds int
 }
 
@@ -27,7 +25,6 @@ func loadConfig() config {
 	return config{
 		databaseURL:      mustEnvStr("DATABASE_URL"),
 		port:             envInt("PORT", 8080),
-		pollInterval:     time.Duration(envInt("POLL_INTERVAL_MS", 2000)) * time.Millisecond,
 		shipDelaySeconds: envInt("SHIP_DELAY_SECONDS", 10),
 	}
 }
@@ -93,19 +90,6 @@ func main() {
 
 	worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
 
-	// Open the HTTP port immediately (Cloud Run requires the container to
-	// listen within its startup timeout). The orders service owns the schema,
-	// so wait for the tables and start the workers in the background.
-	go func() {
-		if err := store.WaitForSchema(ctx, 60*time.Second); err != nil {
-			log.Fatalf("schema never appeared: %v", err)
-		}
-		log.Println("schema ready")
-
-		go worker.RunReserveLoop(ctx, cfg.pollInterval)
-		go worker.RunShipLoop(ctx, cfg.pollInterval)
-	}()
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /inventory-service/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
@@ -118,8 +102,27 @@ func main() {
 		}
 		writeJSON(w, http.StatusOK, levels)
 	})
-	// Simulated supplier restock, triggered by an external scheduler instead of
-	// a background loop. Tops up stock, then retries backordered orders.
+	// The following three are triggered by an external scheduler instead of
+	// background loops.
+	//
+	// Claim pending orders and reserve stock for them.
+	mux.HandleFunc("POST /inventory-service/api/reserve", func(w http.ResponseWriter, r *http.Request) {
+		if err := worker.Reserve(r.Context()); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]bool{"reserved": true})
+	})
+	// Ship confirmed orders whose fulfillment delay has elapsed.
+	mux.HandleFunc("POST /inventory-service/api/ship", func(w http.ResponseWriter, r *http.Request) {
+		ids, err := worker.Ship(r.Context())
+		if err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string][]int64{"shipped": ids})
+	})
+	// Simulated supplier restock: top up stock, then retry backordered orders.
 	mux.HandleFunc("POST /inventory-service/api/restock", func(w http.ResponseWriter, r *http.Request) {
 		if err := worker.Restock(r.Context()); err != nil {
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})

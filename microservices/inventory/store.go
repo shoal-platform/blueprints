@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
-	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -21,26 +19,6 @@ type InventoryLevel struct {
 	Supplier   string `json:"supplier"`
 	PriceCents int    `json:"price_cents"`
 	Stock      int    `json:"stock"`
-}
-
-func (s *Store) WaitForSchema(ctx context.Context, timeout time.Duration) error {
-	deadline := time.Now().Add(timeout)
-	for {
-		var ready bool
-		err := s.pool.QueryRow(ctx,
-			`SELECT to_regclass('public.orders') IS NOT NULL
-			    AND to_regclass('public.inventory') IS NOT NULL`).Scan(&ready)
-		if err == nil && ready {
-			return nil
-		}
-		if time.Now().After(deadline) {
-			if err == nil {
-				err = errors.New("tables not created yet")
-			}
-			return fmt.Errorf("waiting for schema: %w", err)
-		}
-		time.Sleep(2 * time.Second)
-	}
 }
 
 func (s *Store) InventoryLevels(ctx context.Context) ([]InventoryLevel, error) {

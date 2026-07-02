@@ -1,9 +1,8 @@
-"""Notifications service: consumes order_events and exposes the resulting
-notifications over HTTP for the dashboard."""
+"""Notifications service: turns order_events into notifications and exposes
+them over HTTP for the dashboard. The event fan-out runs as an endpoint
+(triggered by a scheduler), not a background loop."""
 
-import asyncio
 import logging
-from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -11,29 +10,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import db
 from config import config
-from consumer import run_consumer
+from consumer import consume_once
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
-
-async def _consume_when_ready():
-    # The orders service owns the schema; wait for the tables, then consume.
-    await db.wait_for_schema()
-    logging.getLogger("notifications").info("schema ready")
-    await run_consumer()
-
-
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
-    # Don't block startup on the schema wait — uvicorn must bind the port
-    # immediately or Cloud Run fails the container. Do the wait in the
-    # background so the port opens right away.
-    task = asyncio.create_task(_consume_when_ready())
-    yield
-    task.cancel()
-
-
-app = FastAPI(title="notifications service", lifespan=lifespan)
+app = FastAPI(title="notifications service")
 
 # The webapp calls this service directly from the browser; demo only, so CORS
 # is wide open.
@@ -50,6 +31,14 @@ async def notifications(order_id: int | None = None):
     if order_id is not None and order_id < 1:
         raise HTTPException(status_code=400, detail="invalid order_id")
     return await db.list_notifications(order_id)
+
+
+@app.post("/notifications-service/api/consume")
+async def consume():
+    """Process unprocessed order events into notifications. Trigger from a
+    scheduler."""
+    processed = await consume_once()
+    return {"processed": processed}
 
 
 if __name__ == "__main__":
