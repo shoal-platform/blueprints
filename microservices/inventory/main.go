@@ -90,10 +90,10 @@ func main() {
 	go worker.RunShipLoop(ctx, cfg.pollInterval)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
+	mux.HandleFunc("GET /inventory-service/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 	})
-	mux.HandleFunc("GET /api/inventory", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /inventory-service/api/inventory", func(w http.ResponseWriter, r *http.Request) {
 		levels, err := store.InventoryLevels(r.Context())
 		if err != nil {
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})

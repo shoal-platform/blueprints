@@ -32,12 +32,12 @@ app = FastAPI(title="notifications service", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 
 
-@app.get("/healthz")
+@app.get("/notifications-service/healthz")
 async def healthz():
     return {"ok": True}
 
 
-@app.get("/api/notifications")
+@app.get("/notifications-service/api/notifications")
 async def notifications(order_id: int | None = None):
     if order_id is not None and order_id < 1:
         raise HTTPException(status_code=400, detail="invalid order_id")
