@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -31,6 +32,15 @@ func loadConfig() config {
 		restockInterval:  time.Duration(envInt("RESTOCK_INTERVAL_MS", 15000)) * time.Millisecond,
 		shipDelaySeconds: envInt("SHIP_DELAY_SECONDS", 10),
 	}
+}
+
+// redactURL masks the password in a connection string so it is safe to log.
+func redactURL(raw string) string {
+	u, err := url.Parse(raw)
+	if err != nil {
+		return "<unparseable>"
+	}
+	return u.Redacted()
 }
 
 func mustEnvStr(key string) string {
@@ -72,6 +82,10 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 func main() {
 	cfg := loadConfig()
 	ctx := context.Background()
+
+	// Log the resolved config first thing so the port and DB target are
+	// visible in the logs before anything can fail (password redacted).
+	log.Printf("config: PORT=%d DATABASE_URL=%s", cfg.port, redactURL(cfg.databaseURL))
 
 	pool, err := pgxpool.New(ctx, cfg.databaseURL)
 	if err != nil {
