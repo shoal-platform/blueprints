@@ -69,16 +69,17 @@ drawn so that refactor stays straightforward.
 
 | Service | Stack | Port | Endpoints |
 | --- | --- | --- | --- |
-| `orders/` | TypeScript, Express 5 | 8081 | `POST /api/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /api/simulate` `{count}` · `GET /api/orders?status=` · `GET /api/orders/:id` (items + events + notifications) · `GET /api/products` · `GET /healthz` |
-| `inventory/` | Go, pgx | 8082 | `GET /api/inventory` · `GET /healthz` |
-| `notifications/` | Python, FastAPI | 8083 | `GET /api/notifications?order_id=` · `GET /healthz` |
+| `orders/` | TypeScript, Express 5 | 8080 | `POST /orders-service/api/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /orders-service/api/simulate` `{count}` · `GET /orders-service/api/orders?status=` · `GET /orders-service/api/orders/:id` (items + events + notifications) · `GET /orders-service/api/products` · `GET /orders-service/healthz` |
+| `inventory/` | Go, pgx | 8080 | `GET /inventory-service/api/inventory` · `GET /inventory-service/healthz` |
+| `notifications/` | Python, FastAPI | 8080 | `GET /notifications-service/api/notifications?order_id=` · `GET /notifications-service/healthz` |
 | `webapp/` | Next.js | 3000 | the dashboard |
 
 
 ## Setup for the web app
-  NEXT_PUBLIC_ORDERS_API_URL=http://localhost
-  NEXT_PUBLIC_INVENTORY_API_URL=http://localhost
-  NEXT_PUBLIC_NOTIFICATIONS_API_URL=http://localhost
+  NEXT_PUBLIC_ORDERS_API_URL=http://localhost:8080
+  NEXT_PUBLIC_INVENTORY_API_URL=http://localhost:8080
+  NEXT_PUBLIC_NOTIFICATIONS_API_URL=http://localhost:8080
 
 ## Setup for the backends
-  DATBASE_URL=
+  # Required — every service exits on startup if DATABASE_URL is unset.
+  DATABASE_URL=

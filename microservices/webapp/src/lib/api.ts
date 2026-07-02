@@ -1,9 +1,9 @@
 const ORDERS_API =
-  process.env.NEXT_PUBLIC_ORDERS_API_URL ?? "http://localhost:8081";
+  process.env.NEXT_PUBLIC_ORDERS_API_URL ?? "http://localhost:8080";
 const INVENTORY_API =
-  process.env.NEXT_PUBLIC_INVENTORY_API_URL ?? "http://localhost:8082";
+  process.env.NEXT_PUBLIC_INVENTORY_API_URL ?? "http://localhost:8080";
 const NOTIFICATIONS_API =
-  process.env.NEXT_PUBLIC_NOTIFICATIONS_API_URL ?? "http://localhost:8083";
+  process.env.NEXT_PUBLIC_NOTIFICATIONS_API_URL ?? "http://localhost:8080";
 
 export type OrderStatus = "pending" | "confirmed" | "backordered" | "shipped";
 

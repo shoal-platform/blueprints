@@ -25,19 +25,20 @@ type config struct {
 func loadConfig() config {
 	_ = godotenv.Load()
 	return config{
-		databaseURL:      envStr("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/dropship"),
-		port:             envInt("PORT", 8082),
+		databaseURL:      mustEnvStr("DATABASE_URL"),
+		port:             envInt("PORT", 8080),
 		pollInterval:     time.Duration(envInt("POLL_INTERVAL_MS", 2000)) * time.Millisecond,
 		restockInterval:  time.Duration(envInt("RESTOCK_INTERVAL_MS", 15000)) * time.Millisecond,
 		shipDelaySeconds: envInt("SHIP_DELAY_SECONDS", 10),
 	}
 }
 
-func envStr(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
+func mustEnvStr(key string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		log.Fatalf("%s is required", key)
 	}
-	return fallback
+	return v
 }
 
 func envInt(key string, fallback int) int {
