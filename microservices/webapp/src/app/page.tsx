@@ -17,8 +17,6 @@ import NewOrderForm from "@/components/NewOrderForm";
 import NotificationsFeed from "@/components/NotificationsFeed";
 import OrderCard from "@/components/OrderCard";
 
-const POLL_MS = 2000;
-
 export default function Dashboard() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [inventory, setInventory] = useState<InventoryLevel[]>([]);
@@ -26,8 +24,10 @@ export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const refresh = useCallback(async () => {
+    setRefreshing(true);
     // Each panel comes from a different service; one being down should not
     // blank the others.
     const results = await Promise.allSettled([
@@ -46,12 +46,12 @@ export default function Dashboard() {
         ? `${failed.length} service(s) unreachable — showing last known data`
         : null,
     );
+    setRefreshing(false);
   }, []);
 
+  // Load once on mount. No auto-polling — use the Refresh button.
   useEffect(() => {
     refresh();
-    const timer = setInterval(refresh, POLL_MS);
-    return () => clearInterval(timer);
   }, [refresh]);
 
   async function simulate() {
@@ -70,6 +70,13 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start gap-3">
         <NewOrderForm products={products} onCreated={refresh} />
+        <button
+          onClick={refresh}
+          disabled={refreshing}
+          className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm hover:bg-stone-100 disabled:opacity-50 dark:border-stone-600 dark:hover:bg-stone-800"
+        >
+          {refreshing ? "Refreshing…" : "🔄 Refresh"}
+        </button>
         <button
           onClick={simulate}
           disabled={simulating}
