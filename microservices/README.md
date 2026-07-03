@@ -69,7 +69,7 @@ drawn so that refactor stays straightforward.
 
 | Service | Stack | Port | Endpoints |
 | --- | --- | --- | --- |
-| `orders/` | TypeScript, Express 5 | 8081 | `POST /api/products/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /api/products/simulate` `{count}` · `GET /api/products/orders?status=` · `GET /api/products/orders/:id` (items + events + notifications) · `GET /api/products` · `GET /healthz` |
+| `orders/` | TypeScript, Express 5 | 8081 | `POST /api/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /api/products/simulate` `{count}` · `GET /api/orders?status=` · `GET /api/orders/:id` (items + events + notifications) · `GET /api/orders/products` · `GET /healthz` |
 | `inventory/` | Go, pgx | 8082 | `GET /api/inventory` · `GET /healthz` |
 | `notifications/` | Python, FastAPI | 8083 | `GET /api/notifications?order_id=` · `GET /healthz` |
 | `webapp/` | Next.js | 3000 | the dashboard |

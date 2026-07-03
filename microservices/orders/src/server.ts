@@ -43,11 +43,11 @@ export function createServer() {
     res.json({ ok: true });
   });
 
-  app.get("/api/products", async (_req, res) => {
+  app.get("/api/orders/products", async (_req, res) => {
     res.json(await listProducts());
   });
 
-  app.get("/api/products/orders", async (req, res) => {
+  app.get("/api/orders", async (req, res) => {
     const status = req.query.status;
     if (status !== undefined) {
       if (typeof status !== "string" || !STATUSES.includes(status)) {
@@ -60,7 +60,7 @@ export function createServer() {
     res.json(await listOrders());
   });
 
-  app.get("/api/products/orders/:id", async (req, res) => {
+  app.get("/api/orders/:id", async (req, res) => {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id < 1) {
       res.status(400).json({ error: "invalid order id" });
@@ -74,7 +74,7 @@ export function createServer() {
     res.json(order);
   });
 
-  app.post("/api/products/orders", async (req, res) => {
+  app.post("/api/orders", async (req, res) => {
     const customerName = asText(req.body?.customer_name, 100);
     const customerEmail = asText(req.body?.customer_email, 200);
     const items = asItems(req.body?.items);
