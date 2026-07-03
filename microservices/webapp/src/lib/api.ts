@@ -73,11 +73,11 @@ async function json<T>(res: Response): Promise<T> {
 }
 
 export function listOrders(): Promise<Order[]> {
-  return fetch(`${ORDERS_API}/api/orders`).then(json<Order[]>);
+  return fetch(`${ORDERS_API}/api/products/orders`).then(json<Order[]>);
 }
 
 export function getOrder(id: number): Promise<OrderDetail> {
-  return fetch(`${ORDERS_API}/api/orders/${id}`).then(json<OrderDetail>);
+  return fetch(`${ORDERS_API}/api/products/orders/${id}`).then(json<OrderDetail>);
 }
 
 export function listProducts(): Promise<Product[]> {
@@ -89,7 +89,7 @@ export function createOrder(
   customerEmail: string,
   items: OrderItemInput[],
 ): Promise<OrderDetail> {
-  return fetch(`${ORDERS_API}/api/orders`, {
+  return fetch(`${ORDERS_API}/api/products/orders`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -101,7 +101,7 @@ export function createOrder(
 }
 
 export function simulateOrders(count: number): Promise<OrderDetail[]> {
-  return fetch(`${ORDERS_API}/api/simulate`, {
+  return fetch(`${ORDERS_API}/api/products/simulate`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ count }),
