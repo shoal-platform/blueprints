@@ -101,7 +101,7 @@ export function createOrder(
 }
 
 export function simulateOrders(count: number): Promise<OrderDetail[]> {
-  return fetch(`${ORDERS_API}/api/products/simulate`, {
+  return fetch(`${ORDERS_API}/api/orders/simulate`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ count }),

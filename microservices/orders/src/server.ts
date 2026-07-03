@@ -99,7 +99,7 @@ export function createServer() {
     res.status(201).json(await createOrder(customerName, customerEmail, items));
   });
 
-  app.post("/api/products/simulate", async (req, res) => {
+  app.post("/api/orders/simulate", async (req, res) => {
     const count = Number(req.body?.count ?? 1);
     if (!Number.isInteger(count) || count < 1 || count > 50) {
       res.status(400).json({ error: "count must be an integer between 1 and 50" });
