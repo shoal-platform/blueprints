@@ -69,7 +69,7 @@ drawn so that refactor stays straightforward.
 
 | Service | Stack | Port | Endpoints |
 | --- | --- | --- | --- |
-| `orders/` | TypeScript, Express 5 | 8080 | `POST /orders-service/api/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /orders-service/api/simulate` `{count}` · `GET /orders-service/api/orders?status=` · `GET /orders-service/api/orders/:id` (items + events + notifications) · `GET /orders-service/api/products` · `GET /orders-service/healthz` |
+| `orders/` | TypeScript, Express 5 | 8080 | `POST /orders-service/api/orders` `{customer_name, customer_email, items: [{product_id, qty}]}` · `POST /orders-service/api/simulate` `{count}` · `GET /orders-service/api/orders?status=` · `GET /orders-service/api/orders/:id` (items + events + notifications) · `GET /orders/products` · `GET /orders-service/healthz` |
 | `inventory/` | Go, pgx | 8080 | `GET /inventory-service/api/inventory` · `POST /inventory-service/api/reserve` · `POST /inventory-service/api/ship` · `POST /inventory-service/api/restock` (all three are scheduler-triggered) · `GET /inventory-service/healthz` |
 | `notifications/` | Python, FastAPI | 8080 | `GET /notifications-service/api/notifications?order_id=` · `POST /notifications-service/api/consume` (scheduler-triggered event fan-out) · `GET /notifications-service/healthz` |
 | `webapp/` | Next.js | 3000 | the dashboard |

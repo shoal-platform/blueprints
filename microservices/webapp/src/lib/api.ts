@@ -81,7 +81,7 @@ export function getOrder(id: number): Promise<OrderDetail> {
 }
 
 export function listProducts(): Promise<Product[]> {
-  return fetch(`${ORDERS_API}/orders-service/api/products`).then(json<Product[]>);
+  return fetch(`${ORDERS_API}/orders/products`).then(json<Product[]>);
 }
 
 export function createOrder(

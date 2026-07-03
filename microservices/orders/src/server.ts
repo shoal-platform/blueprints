@@ -43,7 +43,7 @@ export function createServer() {
     res.json({ ok: true });
   });
 
-  app.get("/orders-service/api/products", async (_req, res) => {
+  app.get("/orders/products", async (_req, res) => {
     res.json(await listProducts());
   });
 
