@@ -1,9 +1,9 @@
 const ORDERS_API =
-  process.env.NEXT_PUBLIC_ORDERS_API_URL ?? "http://localhost:8081";
+  process.env.NEXT_PUBLIC_ORDERS_API_URL ?? "http://localhost:8080";
 const INVENTORY_API =
-  process.env.NEXT_PUBLIC_INVENTORY_API_URL ?? "http://localhost:8082";
+  process.env.NEXT_PUBLIC_INVENTORY_API_URL ?? "http://localhost:8080";
 const NOTIFICATIONS_API =
-  process.env.NEXT_PUBLIC_NOTIFICATIONS_API_URL ?? "http://localhost:8083";
+  process.env.NEXT_PUBLIC_NOTIFICATIONS_API_URL ?? "http://localhost:8080";
 
 export type OrderStatus = "pending" | "confirmed" | "backordered" | "shipped";
 
@@ -73,15 +73,15 @@ async function json<T>(res: Response): Promise<T> {
 }
 
 export function listOrders(): Promise<Order[]> {
-  return fetch(`${ORDERS_API}/api/orders`).then(json<Order[]>);
+  return fetch(`${ORDERS_API}/orders-service/api/orders`).then(json<Order[]>);
 }
 
 export function getOrder(id: number): Promise<OrderDetail> {
-  return fetch(`${ORDERS_API}/api/orders/${id}`).then(json<OrderDetail>);
+  return fetch(`${ORDERS_API}/orders-service/api/orders/${id}`).then(json<OrderDetail>);
 }
 
 export function listProducts(): Promise<Product[]> {
-  return fetch(`${ORDERS_API}/api/products`).then(json<Product[]>);
+  return fetch(`${ORDERS_API}/orders-service/api/products`).then(json<Product[]>);
 }
 
 export function createOrder(
@@ -89,7 +89,7 @@ export function createOrder(
   customerEmail: string,
   items: OrderItemInput[],
 ): Promise<OrderDetail> {
-  return fetch(`${ORDERS_API}/api/orders`, {
+  return fetch(`${ORDERS_API}/orders-service/api/orders`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -101,7 +101,7 @@ export function createOrder(
 }
 
 export function simulateOrders(count: number): Promise<OrderDetail[]> {
-  return fetch(`${ORDERS_API}/api/simulate`, {
+  return fetch(`${ORDERS_API}/orders-service/api/simulate`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ count }),
@@ -109,11 +109,11 @@ export function simulateOrders(count: number): Promise<OrderDetail[]> {
 }
 
 export function listInventory(): Promise<InventoryLevel[]> {
-  return fetch(`${INVENTORY_API}/api/inventory`).then(json<InventoryLevel[]>);
+  return fetch(`${INVENTORY_API}/inventory-service/api/inventory`).then(json<InventoryLevel[]>);
 }
 
 export function listNotifications(): Promise<AppNotification[]> {
-  return fetch(`${NOTIFICATIONS_API}/api/notifications`).then(
+  return fetch(`${NOTIFICATIONS_API}/notifications-service/api/notifications`).then(
     json<AppNotification[]>,
   );
 }

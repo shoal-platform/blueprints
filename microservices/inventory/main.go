@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -17,27 +17,33 @@ import (
 type config struct {
 	databaseURL      string
 	port             int
-	pollInterval     time.Duration
-	restockInterval  time.Duration
 	shipDelaySeconds int
 }
 
 func loadConfig() config {
 	_ = godotenv.Load()
 	return config{
-		databaseURL:      envStr("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/dropship"),
-		port:             envInt("PORT", 8082),
-		pollInterval:     time.Duration(envInt("POLL_INTERVAL_MS", 2000)) * time.Millisecond,
-		restockInterval:  time.Duration(envInt("RESTOCK_INTERVAL_MS", 15000)) * time.Millisecond,
+		databaseURL:      mustEnvStr("DATABASE_URL"),
+		port:             envInt("PORT", 8080),
 		shipDelaySeconds: envInt("SHIP_DELAY_SECONDS", 10),
 	}
 }
 
-func envStr(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
+// redactURL masks the password in a connection string so it is safe to log.
+func redactURL(raw string) string {
+	u, err := url.Parse(raw)
+	if err != nil {
+		return "<unparseable>"
 	}
-	return fallback
+	return u.Redacted()
+}
+
+func mustEnvStr(key string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		log.Fatalf("%s is required", key)
+	}
+	return v
 }
 
 func envInt(key string, fallback int) int {
@@ -72,34 +78,57 @@ func main() {
 	cfg := loadConfig()
 	ctx := context.Background()
 
+	// Log the resolved config first thing so the port and DB target are
+	// visible in the logs before anything can fail (password redacted).
+	log.Printf("config: PORT=%d DATABASE_URL=%s", cfg.port, redactURL(cfg.databaseURL))
+
 	pool, err := pgxpool.New(ctx, cfg.databaseURL)
 	if err != nil {
 		log.Fatalf("failed to create pool: %v", err)
 	}
 	store := &Store{pool: pool}
 
-	// The orders service owns the schema; wait until it has created the tables.
-	if err := store.WaitForSchema(ctx, 60*time.Second); err != nil {
-		log.Fatalf("schema never appeared: %v", err)
-	}
-	log.Println("schema ready")
-
 	worker := &Worker{store: store, shipDelaySeconds: cfg.shipDelaySeconds}
-	go worker.RunReserveLoop(ctx, cfg.pollInterval)
-	go worker.RunRestockLoop(ctx, cfg.restockInterval)
-	go worker.RunShipLoop(ctx, cfg.pollInterval)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
+	mux.HandleFunc("GET /inventory-service/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 	})
-	mux.HandleFunc("GET /api/inventory", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /inventory-service/api/inventory", func(w http.ResponseWriter, r *http.Request) {
 		levels, err := store.InventoryLevels(r.Context())
 		if err != nil {
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return
 		}
 		writeJSON(w, http.StatusOK, levels)
+	})
+	// The following three are triggered by an external scheduler instead of
+	// background loops.
+	//
+	// Claim pending orders and reserve stock for them.
+	mux.HandleFunc("POST /inventory-service/api/reserve", func(w http.ResponseWriter, r *http.Request) {
+		if err := worker.Reserve(r.Context()); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]bool{"reserved": true})
+	})
+	// Ship confirmed orders whose fulfillment delay has elapsed.
+	mux.HandleFunc("POST /inventory-service/api/ship", func(w http.ResponseWriter, r *http.Request) {
+		ids, err := worker.Ship(r.Context())
+		if err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string][]int64{"shipped": ids})
+	})
+	// Simulated supplier restock: top up stock, then retry backordered orders.
+	mux.HandleFunc("POST /inventory-service/api/restock", func(w http.ResponseWriter, r *http.Request) {
+		if err := worker.Restock(r.Context()); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]bool{"restocked": true})
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.port)

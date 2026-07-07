@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"time"
 )
 
 type Worker struct {
@@ -11,47 +10,39 @@ type Worker struct {
 	shipDelaySeconds int
 }
 
-// RunReserveLoop claims pending orders and reserves stock for them.
-func (w *Worker) RunReserveLoop(ctx context.Context, interval time.Duration) {
-	for {
-		w.reserve(ctx, "pending")
-		time.Sleep(interval)
-	}
+// Reserve claims pending orders and reserves stock for them. Triggered by an
+// external scheduler.
+func (w *Worker) Reserve(ctx context.Context) error {
+	return w.reserve(ctx, "pending")
 }
 
-// RunRestockLoop periodically simulates a supplier delivery, then retries
-// backordered orders against the new stock.
-func (w *Worker) RunRestockLoop(ctx context.Context, interval time.Duration) {
-	for {
-		time.Sleep(interval)
-		if err := w.store.Restock(ctx, 5, 20, 200); err != nil {
-			log.Printf("restock failed: %v", err)
-			continue
-		}
-		log.Println("restocked all products (simulated supplier sync)")
-		w.reserve(ctx, "backordered")
+// Restock simulates a supplier delivery, then retries backordered orders
+// against the new stock. Triggered by an external scheduler.
+func (w *Worker) Restock(ctx context.Context) error {
+	if err := w.store.Restock(ctx, 5, 20, 200); err != nil {
+		return err
 	}
+	log.Println("restocked all products (simulated supplier sync)")
+	return w.reserve(ctx, "backordered")
 }
 
-// RunShipLoop ships confirmed orders after a simulated fulfillment delay.
-func (w *Worker) RunShipLoop(ctx context.Context, interval time.Duration) {
-	for {
-		ids, err := w.store.ShipConfirmed(ctx, w.shipDelaySeconds)
-		if err != nil {
-			log.Printf("ship pass failed: %v", err)
-		}
-		for _, id := range ids {
-			log.Printf("order %d shipped", id)
-		}
-		time.Sleep(interval)
+// Ship ships confirmed orders whose simulated fulfillment delay has elapsed.
+// Triggered by an external scheduler. Returns the shipped order IDs.
+func (w *Worker) Ship(ctx context.Context) ([]int64, error) {
+	ids, err := w.store.ShipConfirmed(ctx, w.shipDelaySeconds)
+	if err != nil {
+		return nil, err
 	}
+	for _, id := range ids {
+		log.Printf("order %d shipped", id)
+	}
+	return ids, nil
 }
 
-func (w *Worker) reserve(ctx context.Context, fromStatus string) {
+func (w *Worker) reserve(ctx context.Context, fromStatus string) error {
 	ids, err := w.store.OrderIDs(ctx, fromStatus)
 	if err != nil {
-		log.Printf("listing %s orders failed: %v", fromStatus, err)
-		return
+		return err
 	}
 	for _, id := range ids {
 		newStatus, err := w.store.TryReserve(ctx, id, fromStatus)
@@ -63,4 +54,5 @@ func (w *Worker) reserve(ctx context.Context, fromStatus string) {
 			log.Printf("order %d: %s -> %s", id, fromStatus, newStatus)
 		}
 	}
+	return nil
 }

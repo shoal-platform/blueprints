@@ -1,7 +1,5 @@
 """Database access. The orders service owns the schema; this service only
-waits for the tables to exist and then reads/writes its own rows."""
-
-import asyncio
+reads/writes its own rows."""
 
 import psycopg
 from psycopg.rows import dict_row
@@ -11,26 +9,6 @@ from config import config
 
 async def connect() -> psycopg.AsyncConnection:
     return await psycopg.AsyncConnection.connect(config.database_url, autocommit=True)
-
-
-async def wait_for_schema(timeout_seconds: float = 60) -> None:
-    loop = asyncio.get_running_loop()
-    deadline = loop.time() + timeout_seconds
-    last_error: Exception | None = None
-    while loop.time() < deadline:
-        try:
-            async with await connect() as conn:
-                cur = await conn.execute(
-                    """SELECT to_regclass('public.order_events') IS NOT NULL
-                          AND to_regclass('public.notifications') IS NOT NULL"""
-                )
-                row = await cur.fetchone()
-                if row and row[0]:
-                    return
-        except psycopg.Error as err:
-            last_error = err
-        await asyncio.sleep(2)
-    raise RuntimeError(f"schema never appeared (last error: {last_error})")
 
 
 async def fetch_unprocessed_events(conn: psycopg.AsyncConnection, limit: int = 50):

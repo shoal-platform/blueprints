@@ -1,0 +1,19 @@
+{
+  "name": "discord-joke-bot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A stateless HTTP-interactions Discord bot that posts jokes on a schedule and answers /joke.",
+  "scripts": {
+    "start": "node src/server.js",
+    "register": "node src/register.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "discord-interactions": "^4.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

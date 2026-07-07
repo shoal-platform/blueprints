@@ -6,9 +6,15 @@ dotenv.config({
   path: resolve(dirname(fileURLToPath(import.meta.url)), "../.env"),
 });
 
+function requireEnv(key: string): string {
+  const v = process.env[key];
+  if (!v) {
+    throw new Error(`${key} is required`);
+  }
+  return v;
+}
+
 export const config = {
-  port: Number(process.env.PORT ?? 8081),
-  databaseUrl:
-    process.env.DATABASE_URL ??
-    "postgres://postgres:postgres@localhost:5432/dropship",
+  port: Number(process.env.PORT ?? 8080),
+  databaseUrl: requireEnv("DATABASE_URL"),
 };
