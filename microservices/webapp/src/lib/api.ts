@@ -81,7 +81,7 @@ export function getOrder(id: number): Promise<OrderDetail> {
 }
 
 export function listProducts(): Promise<Product[]> {
-  return fetch(`${ORDERS_API}/api/products`).then(json<Product[]>);
+  return fetch(`${ORDERS_API}/api/orders/products`).then(json<Product[]>);
 }
 
 export function createOrder(
@@ -101,7 +101,7 @@ export function createOrder(
 }
 
 export function simulateOrders(count: number): Promise<OrderDetail[]> {
-  return fetch(`${ORDERS_API}/api/simulate`, {
+  return fetch(`${ORDERS_API}/api/orders/simulate`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ count }),
