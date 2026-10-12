@@ -13,7 +13,7 @@ COPY . .
 RUN useradd --no-create-home app
 USER app
 
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=8000
+EXPOSE 8000
 
 CMD ["/bin/sh", "-c", "exec gunicorn config.wsgi --bind 0.0.0.0:${PORT} --workers 2 --access-logfile -"]
