@@ -16,4 +16,4 @@ USER app
 ENV PORT=8080
 EXPOSE 8080
 
-CMD ["/bin/sh", "-c", "exec gunicorn helloworld.wsgi --bind 0.0.0.0:${PORT} --workers 2 --access-logfile -"]
+CMD ["/bin/sh", "-c", "exec gunicorn config.wsgi --bind 0.0.0.0:${PORT} --workers 2 --access-logfile -"]
