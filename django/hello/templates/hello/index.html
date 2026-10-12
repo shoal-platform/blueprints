@@ -1,8 +1,9 @@
-<!doctype html>
+{% load static %}<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="{% static 'hello/platform201-mark.png' %}" />
     <title>django-hello-world</title>
     <style>
       :root {
@@ -50,7 +51,7 @@
 
       .logo {
         height: 48px;
-        width: 48px;
+        width: auto;
       }
 
       h1 {
@@ -80,16 +81,16 @@
   <body>
     <main>
       <div class="heading">
-        {% include "hello/shoal-logo.svg" %}
+        <img class="logo" src="{% static 'hello/platform201-mark.png' %}" alt="Platform201" width="760" height="288" />
         <h1>Hello World</h1>
       </div>
       <p>
         This is a Django app deployed on
-        <a href="https://shoalstack.com">Shoal</a>
+        <a href="https://platform201.com">Platform201</a>
       </p>
       <p>
         Try the API:
-        <a href="{% url 'hello' %}?name=Shoal"><code>{% url 'hello' %}?name=Shoal</code></a>
+        <a href="{% url 'hello' %}?name=Platform201"><code>{% url 'hello' %}?name=Platform201</code></a>
       </p>
     </main>
   </body>

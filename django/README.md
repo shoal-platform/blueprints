@@ -1,11 +1,12 @@
 # Django Hello World Blueprint
 
-Django web app blueprint, hosted on [shoalstack.com](https://shoalstack.com).
+Django web app blueprint, hosted on [platform201.com](https://platform201.com).
 
 ## Stack
 
 - Django 6.1 (no database)
 - Gunicorn (production server)
+- WhiteNoise (serves static files; `collectstatic` runs in the Dockerfile)
 
 ## Usage
 

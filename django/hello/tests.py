@@ -1,4 +1,7 @@
+from django.contrib.staticfiles import finders
 from django.test import SimpleTestCase
+
+LOGO = "hello/platform201-mark.png"
 
 
 class IndexTests(SimpleTestCase):
@@ -7,7 +10,16 @@ class IndexTests(SimpleTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<h1>Hello World</h1>", html=True)
-        self.assertContains(response, 'href="/api/hello?name=Shoal"')
+        self.assertContains(response, 'href="/api/hello?name=Platform201"')
+
+    def test_shows_platform201_logo(self) -> None:
+        response = self.client.get("/")
+
+        self.assertContains(response, f'src="/static/{LOGO}"')
+        self.assertContains(response, f'rel="icon" type="image/png" href="/static/{LOGO}"')
+
+    def test_logo_is_a_collectable_static_file(self) -> None:
+        self.assertIsNotNone(finders.find(LOGO))
 
 
 class HelloApiTests(SimpleTestCase):
