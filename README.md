@@ -28,3 +28,4 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 | DiscordBot | Discordbot | - | - |
 | WeatherApp | WeatherLLM | Uses an MCP server + LLM to compare the weather and some info on the cities | - |
 | django | Django Hello World | A minimal Django app: hello world page + JSON hello endpoint, served by gunicorn | - |
+| rust | Rust Hello World | A minimal Axum app: hello world page + JSON hello endpoint, single self-contained binary | - |

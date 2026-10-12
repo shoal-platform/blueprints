@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/static/platform201-mark.png" />
+    <title>rust-hello-world</title>
+    <style>
+      :root {
+        --text: #4a5568;
+        --text-h: #1a202c;
+
+        font: 18px/145% system-ui, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0.18px;
+        color-scheme: light dark;
+        color: var(--text);
+        background: white;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text: #a0aec0;
+          --text-h: #f7fafc;
+          background: black;
+        }
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        place-content: center;
+        place-items: center;
+        min-height: 100svh;
+        padding: 32px 20px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .heading {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .logo {
+        height: 48px;
+        width: auto;
+      }
+
+      h1 {
+        font-weight: 500;
+        color: var(--text-h);
+        font-size: 56px;
+        letter-spacing: -1.68px;
+        margin: 0;
+      }
+
+      p {
+        max-width: 560px;
+        margin: 0;
+      }
+
+      @media (max-width: 1024px) {
+        :root {
+          font-size: 16px;
+        }
+
+        h1 {
+          font-size: 36px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="heading">
+        <img class="logo" src="/static/platform201-mark.png" alt="Platform201" width="760" height="288" />
+        <h1>Hello World</h1>
+      </div>
+      <p>
+        This is a Rust app deployed on
+        <a href="https://platform201.com">Platform201</a>
+      </p>
+      <p>
+        Try the API:
+        <a href="/api/hello?name=Platform201"><code>/api/hello?name=Platform201</code></a>
+      </p>
+    </main>
+  </body>
+</html>

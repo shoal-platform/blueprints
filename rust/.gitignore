@@ -1,0 +1,5 @@
+target/
+
+# The repo root ignores Cargo.lock; this is an app, so commit it for
+# reproducible builds (the Dockerfile builds with --locked).
+!Cargo.lock
