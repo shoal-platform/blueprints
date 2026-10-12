@@ -1,0 +1,127 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: oklch(0.1613 0.0107 248.5062);
+  background: #edf5ff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #f5f9ff, #e9f2ff 55%, #f0f8ff);
+}
+
+main::before,
+main::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+main::before {
+  inset: -25%;
+  background:
+    radial-gradient(ellipse at 20% 30%, #76b6ff40, transparent 45%),
+    radial-gradient(ellipse at 80% 65%, #67e8f933, transparent 40%),
+    radial-gradient(ellipse at 65% 20%, #a5a0ff26, transparent 40%),
+    linear-gradient(120deg, transparent 30%, #ffffff80 42%, #93c5fd30 48%, #ffffff60 54%, transparent 65%);
+  animation: holo-shimmer 18s ease-in-out infinite alternate;
+}
+
+main::after {
+  inset: 0;
+  background: repeating-linear-gradient(
+    125deg,
+    transparent 0 100px,
+    #ffffff38 101px,
+    transparent 103px 200px
+  );
+  mask-image: radial-gradient(ellipse at center, transparent 15%, #000 90%);
+}
+
+@keyframes holo-shimmer {
+  from {
+    transform: translate(-3%, -2%) rotate(-3deg);
+  }
+  to {
+    transform: translate(3%, 2%) rotate(3deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main::before {
+    animation: none;
+  }
+}
+
+.logo {
+  display: block;
+  width: min(240px, 100%);
+  height: auto;
+}
+
+h1 {
+  margin: 0;
+  font-family: 'Space Grotesk', Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+h1 span {
+  color: #0033d1;
+}
+
+.status {
+  margin: 0;
+  color: oklch(0.532 0.0407 257.42);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.docs {
+  margin: 8px 0 0;
+  padding: 20px 24px;
+  border: 1px solid oklch(0.9137 0.0138 255.51);
+  border-radius: 8px;
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+.docs a {
+  color: #0033d1;
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
+.docs a:hover {
+  color: #0ea5e9;
+}
+
+.docs a:focus-visible {
+  outline: 2px solid #0033d1;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
