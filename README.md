@@ -27,3 +27,4 @@ Each top-level folder is one blueprint and contains its code. Example projects/c
 | strawpoll | StrawPoll | Simple starwpoll app, with expiry and times with output, UI + container and database | - |
 | DiscordBot | Discordbot | - | - |
 | WeatherApp | WeatherLLM | Uses an MCP server + LLM to compare the weather and some info on the cities | - |
+| django | Django Hello World | A minimal Django app: hello world page + JSON hello endpoint, served by gunicorn | - |
