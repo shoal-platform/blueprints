@@ -1,6 +1,6 @@
 # blueprints
 
-Mono repo of blueprints for the Shoal platform. A blueprint is a starting point — an architecture pattern or implementation (e.g. API backend, MCP server) — that a user can pick to bootstrap a graph.
+Mono repo of blueprints for platform201. A blueprint is a starting point — an architecture pattern or implementation (e.g. API backend, MCP server) — that a user can pick to bootstrap a graph.
 
 Each top-level folder is one blueprint and contains its code. Example projects/code that _use_ a blueprint do not live here.
 
