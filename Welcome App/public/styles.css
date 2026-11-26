@@ -177,11 +177,6 @@ h3 {
   background: var(--ink-hover);
 }
 
-.button--small {
-  padding: 0.625rem 1rem;
-  font-size: 0.9375rem;
-}
-
 .link-underline {
   display: inline-flex;
   align-items: center;
@@ -233,17 +228,11 @@ h3 {
 
 .site-header {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   align-items: center;
   gap: 1rem;
   padding: 1rem var(--gutter);
   border-bottom: 1px solid var(--border);
-}
-
-@media (max-width: 359px) {
-  .site-header .button {
-    display: none;
-  }
 }
 
 .site-nav {
@@ -268,10 +257,6 @@ h3 {
 
   .site-nav {
     display: flex;
-  }
-
-  .site-header .button {
-    justify-self: end;
   }
 }
 
