@@ -1,0 +1,250 @@
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+
+:root {
+  --background: oklch(0.9851 0 0);
+  --foreground: oklch(0.1613 0.0107 248.5062);
+  --card: oklch(0.95 0.004 201.49);
+  --muted: oklch(0.9658 0.0123 215.8228);
+  --muted-foreground: oklch(0.2889 0.0148 244.1658);
+  --primary: #006591;
+  --border: oklch(0.9219 0 0);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk", var(--font-sans);
+
+  --radius: 0.25rem;
+  --transition: 150ms ease;
+
+  color-scheme: light;
+}
+
+:root.dark {
+  --background: oklch(0.1613 0.0107 248.5062);
+  --foreground: oklch(0.9851 0 0);
+  --card: oklch(0.2103 0.0191 252.088);
+  --muted: oklch(0 0.0148 244.1658);
+  --muted-foreground: oklch(0.9152 0.0416 255.0087);
+  --primary: #0ea5e9;
+  --border: oklch(0.2768 0 0);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+}
+
+/* Inline icons are outline-style and inherit the text color. */
+svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.site-footer a {
+  transition: color var(--transition);
+}
+
+.site-footer a:hover {
+  color: var(--foreground);
+}
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+
+/* Brand ---------------------------------------------------------------- */
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+/* Theme toggle --------------------------------------------------------- */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition:
+    color var(--transition),
+    background-color var(--transition);
+}
+
+.theme-toggle:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.icon-sun,
+.dark .icon-moon {
+  display: none;
+}
+
+.dark .icon-sun {
+  display: block;
+}
+
+/* Hero ----------------------------------------------------------------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.hero__logo {
+  margin-bottom: 0.5rem;
+}
+
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.hero p {
+  color: var(--muted-foreground);
+  line-height: 1.625;
+  text-wrap: pretty;
+}
+
+/* Cards ---------------------------------------------------------------- */
+
+.cards {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.card:hover {
+  border-color: color-mix(in oklch, var(--primary) 40%, transparent);
+  background: color-mix(in oklch, var(--muted) 50%, transparent);
+}
+
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.card__icon {
+  flex-shrink: 0;
+  color: var(--primary);
+  stroke-width: 1.75;
+}
+
+.card p {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: var(--muted-foreground);
+}
+
+/* ==========================================================================
+   Scrollbar
+   ========================================================================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--background);
+}
