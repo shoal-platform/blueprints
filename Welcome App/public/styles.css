@@ -858,20 +858,16 @@ h3 {
   animation-delay: 160ms;
 }
 
-.hero h1 .line:nth-child(3) {
-  animation-delay: 240ms;
-}
-
 .hero__copy > .lead {
-  animation-delay: 340ms;
+  animation-delay: 260ms;
 }
 
 .hero__copy > .hero__actions {
-  animation-delay: 420ms;
+  animation-delay: 340ms;
 }
 
 .hero__copy > .checks {
-  animation-delay: 500ms;
+  animation-delay: 420ms;
 }
 
 .blob {
