@@ -18,7 +18,8 @@ Open [http://localhost:3000](http://localhost:3000). Set the `PORT` environment 
 server.js           Static file server (Node.js built-ins only)
 public/
   index.html        The page
-  styles.css        Styles and design tokens
+  styles.css        Styles, design tokens and animations
+  motion.js         Scroll reveals, ticker band and AI prompt demo
   icon.svg          Favicon
 ```
 

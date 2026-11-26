@@ -31,6 +31,8 @@
   --page-width: 76rem;
   --gutter: clamp(1rem, 4vw, 2.5rem);
   --transition: 150ms ease;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   color-scheme: light;
 }
@@ -584,8 +586,15 @@ h3 {
   font-size: 1.25rem;
 }
 
+/* The ghost copy reserves the full text's space so typing never shifts the layout. */
 .prompt__text {
+  display: grid;
   flex: 1;
+}
+
+.prompt__ghost,
+.prompt__typed {
+  grid-area: 1 / 1;
 }
 
 .prompt__send {
@@ -752,10 +761,298 @@ h3 {
 
 /* ==========================================================================
    Motion
+   Entrance animations use the individual `translate` / `scale` properties so
+   they never fight the `transform` used by hover states and the floating card.
    ========================================================================== */
 
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 1.5rem;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes blob-in {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+}
+
+@keyframes blob-morph {
+  0% {
+    border-radius: 46% 54% 42% 58% / 52% 38% 62% 48%;
+    rotate: 0deg;
+  }
+  50% {
+    border-radius: 58% 42% 55% 45% / 44% 56% 44% 56%;
+    rotate: 5deg;
+  }
+  100% {
+    border-radius: 40% 60% 48% 52% / 58% 42% 58% 42%;
+    rotate: -4deg;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-1deg) translateY(-0.625rem);
+  }
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    opacity: 0;
+    scale: 2.75;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  to {
+    translate: -50% 0;
+  }
+}
+
+/* Hero entrance --------------------------------------------------------- */
+
+.hero__copy > :not(h1),
+.hero h1 .line {
+  animation: rise 800ms var(--ease-out) backwards;
+}
+
+.hero h1 .line {
+  display: block;
+}
+
+.hero h1 .line:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.hero h1 .line:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.hero h1 .line:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.hero__copy > .lead {
+  animation-delay: 340ms;
+}
+
+.hero__copy > .hero__actions {
+  animation-delay: 420ms;
+}
+
+.hero__copy > .checks {
+  animation-delay: 500ms;
+}
+
+.blob {
+  animation:
+    blob-in 1000ms var(--ease-out) 150ms backwards,
+    blob-morph 16s ease-in-out 1150ms infinite alternate;
+}
+
+.graph-card {
+  animation:
+    rise 900ms var(--ease-out) 350ms backwards,
+    float 7s ease-in-out 1250ms infinite;
+}
+
+.node {
+  animation: pop 600ms var(--ease-spring) 900ms backwards;
+}
+
+.badge {
+  animation: pop 500ms var(--ease-spring) 1300ms backwards;
+}
+
+.caption {
+  animation: fade 800ms ease 1400ms backwards;
+}
+
+/* Pulsing status dots --------------------------------------------------- */
+
+.dot--pulse {
+  position: relative;
+}
+
+.dot--pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Arrow nudges ---------------------------------------------------------- */
+
+.button svg,
+.link-underline svg,
+.announcement__arrow,
+.card h3 span {
+  display: inline-block;
+  transition: translate 200ms var(--ease-out);
+}
+
+.button:hover svg,
+.link-underline:hover svg,
+.card:hover h3 span {
+  translate: 2px -2px;
+}
+
+.announcement:hover .announcement__arrow {
+  translate: 4px 0;
+}
+
+/* Scroll reveals (only when motion.js has set html.motion) --------------- */
+
+.motion [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+}
+
+.motion [data-reveal].is-revealed {
+  animation: rise 800ms var(--ease-out) backwards;
+}
+
+@media (min-width: 640px) {
+  .motion .card.is-revealed:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .motion .card.is-revealed:nth-child(3) {
+    animation-delay: 180ms;
+  }
+
+  .motion .card.is-revealed:nth-child(4) {
+    animation-delay: 270ms;
+  }
+}
+
+/* Ticker band (built by motion.js) --------------------------------------- */
+
+.marquee {
+  flex: 1 1 20rem;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee .band__list {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.marquee .band__list li {
+  white-space: nowrap;
+}
+
+.marquee .band__list li + li::before {
+  content: none;
+}
+
+.marquee .band__list li::after {
+  content: "\2733";
+  margin-inline: 1.25rem;
+  color: #a3ab84;
+  font-size: 0.875em;
+}
+
+/* AI prompt demo (driven by motion.js) ----------------------------------- */
+
+.prompt.is-animating .prompt__ghost {
+  visibility: hidden;
+}
+
+.prompt__typed {
+  transition: opacity 300ms ease;
+}
+
+.prompt.is-resetting .prompt__typed {
+  opacity: 0;
+}
+
+.prompt.is-typing .prompt__typed::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 2px;
+  background: var(--purple);
+  vertical-align: -0.2em;
+  animation: blink 1s steps(1) infinite;
+}
+
+.prompt__send {
+  transition:
+    scale 200ms var(--ease-spring),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.prompt.is-sending .prompt__send {
+  scale: 0.85;
+  background: var(--purple);
+  color: var(--surface);
+}
+
+.prompt.is-animating .chip {
+  transition:
+    opacity 300ms ease,
+    translate 450ms var(--ease-spring),
+    scale 450ms var(--ease-spring);
+}
+
+.prompt.is-animating .chip:not(.is-visible) {
+  opacity: 0;
+  translate: 0 0.5rem;
+  scale: 0.94;
+}
+
+/* Reduced motion --------------------------------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
     transition: none !important;
   }
 }
