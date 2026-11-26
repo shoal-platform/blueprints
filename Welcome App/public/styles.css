@@ -285,7 +285,9 @@ h3 {
   align-items: center;
   max-width: calc(var(--page-width) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: clamp(3rem, 8vw, 6rem) var(--gutter);
+  /* Vertical padding follows the viewport height so the band below stays above the fold. */
+  padding: clamp(2.5rem, 6vh, 6rem) var(--gutter);
+  padding-block: clamp(2.5rem, 6svh, 6rem);
 }
 
 @media (min-width: 960px) {
